@@ -1,4 +1,4 @@
-from nltk import pos_tag
+from nltk import pos_tag, RegexpParser
 from nltk.tokenize import word_tokenize, sent_tokenize,PunktSentenceTokenizer
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
@@ -52,7 +52,15 @@ def process_content():
         for i in tokenized[:5]:
             words = word_tokenize(i)
             tagged = pos_tag(words)
-            print(tagged)
+            #using chunck
+            # print(tagged)
+            chunkGram = r"""Chunk: {<RB.?>*<VB.?>*<NNP>+<NN>?}"""
+            chunkParser = RegexpParser(chunkGram)
+            chunked = chunkParser.parse(tagged)
+            print(chunked)
+            for subtree in chunked.subtrees(filter=lambda t: t.label() == 'Chunk'):
+                print(subtree)
+            chunked.draw()     
 
     except Exception as e:
         print(str(e))
