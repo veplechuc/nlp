@@ -1,9 +1,7 @@
-from nltk import pos_tag, RegexpParser
+from nltk import pos_tag, RegexpParser, ne_chunk
 from nltk.tokenize import word_tokenize, sent_tokenize,PunktSentenceTokenizer
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, state_union
 from nltk.stem import PorterStemmer
-from nltk.corpus import state_union
-
 import string
 
 text = "Computers don't speak or speaking in English. So, we've to learn, or learning C, C++, ,C#, Java, Python and the like! Yay!. Or may we should use another tool"
@@ -36,10 +34,12 @@ stemmed_example = [ps.stem(word) for word in words ] # remember to tokenize the 
 
 print (f'Stemming -> {stemmed_example}')
 
-#tagging
+# tagging
 # need to have installed
 # nltk.download('averaged_perceptron_tagger')
 # nltk.download('state_union')
+# nltk.download('maxent_ne_chunker')
+# nltk.download('words')
 train_text = state_union.raw("2005-GWBush.txt")
 sample_text = state_union.raw("2006-GWBush.txt")
 
@@ -54,16 +54,29 @@ def process_content():
             tagged = pos_tag(words)
             #using chunck
             # print(tagged)
-            chunkGram = r"""Chunk: {<RB.?>*<VB.?>*<NNP>+<NN>?}"""
-            chunkParser = RegexpParser(chunkGram)
-            chunked = chunkParser.parse(tagged)
-            print(chunked)
-            for subtree in chunked.subtrees(filter=lambda t: t.label() == 'Chunk'):
-                print(subtree)
-            chunked.draw()     
+            # chunkGram = r"""Chunk: {<RB.?>*<VB.?>*<NNP>+<NN>?}"""
+            # chunkParser = RegexpParser(chunkGram)
+            # chunked = chunkParser.parse(tagged)
+            # print(chunked)
+            # for subtree in chunked.subtrees(filter=lambda t: t.label() == 'Chunk'):
+            #     print(subtree)
+            # chunked.draw()     
+            namedEnt = ne_chunk(tagged, binary=True)
+            namedEnt.draw()
 
     except Exception as e:
         print(str(e))
 
-
 process_content()
+
+############COMMENTS
+# NE Type and Examples
+# ORGANIZATION - Georgia-Pacific Corp., WHO
+# PERSON - Eddy Bonte, President Obama
+# LOCATION - Murray River, Mount Everest
+# DATE - June, 2008-06-29
+# TIME - two fifty a m, 1:30 p.m.
+# MONEY - 175 million Canadian Dollars, GBP 10.40
+# PERCENT - twenty pct, 18.75 %
+# FACILITY - Washington Monument, Stonehenge
+# GPE - South East Asia, Midlothian
