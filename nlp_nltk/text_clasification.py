@@ -1,6 +1,7 @@
 import nltk
 import random
 from nltk.corpus import movie_reviews
+import pickle
 
 "remember --> nltk.download('movie_reviews')"
 
@@ -22,6 +23,16 @@ def find_features(document):
 
     return features
 
+#save model
+def save_model(model, file_name):
+    with open(f'{file_name}.pickle', "wb") as save_classifier:
+        pickle.dump(model, save_classifier)
+    
+#load the model saved
+def load_model(file_name):
+    with open(f'{file_name}.pickle', "rb") as classifier_f:
+        classifier = pickle.load(classifier_f)
+    return classifier
 # print(documents[1])
 
 all_words = []
@@ -44,8 +55,15 @@ training_set = featuresets[:1900]
 
 # set that we'll test against.
 testing_set = featuresets[1900:]
-classifier = nltk.NaiveBayesClassifier.train(training_set)
+
+# uncomment this line if you dont have the model saved
+#classifier = nltk.NaiveBayesClassifier.train(training_set)
+
+# now call the saved method comment if this is the first time you run this program
+classifier = load_model('naive_bayes2')
+
 
 print("Classifier NaiveBayes accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
 # what the most valuable words are when it comes to positive or negative reviews:
 classifier.show_most_informative_features(15)
+save_model(classifier, 'naive_bayes2')
