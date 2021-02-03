@@ -3,6 +3,14 @@ import random
 from nltk.corpus import movie_reviews
 import pickle
 
+from nltk.classify.scikitlearn import SklearnClassifier
+
+from sklearn.naive_bayes import MultinomialNB,BernoulliNB
+from sklearn.linear_model import LogisticRegression,SGDClassifier
+from sklearn.svm import SVC, LinearSVC, NuSVC
+
+
+
 "remember --> nltk.download('movie_reviews')"
 
 """In each category (we have pos or neg), take all of the file IDs (each review has its own ID),
@@ -65,5 +73,17 @@ classifier = load_model('naive_bayes2')
 
 print("Classifier NaiveBayes accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
 # what the most valuable words are when it comes to positive or negative reviews:
-classifier.show_most_informative_features(15)
-save_model(classifier, 'naive_bayes2')
+# classifier.show_most_informative_features(15)
+# save_model(classifier, 'naive_bayes2')
+
+models = [MultinomialNB, BernoulliNB, LogisticRegression,
+                       SGDClassifier, SVC, LinearSVC, NuSVC
+                     ]
+
+def classify(models):
+    for model in models:
+        classifier = SklearnClassifier(model())
+        classifier.train(training_set)
+        print(f'{model.__name__}_classifier accuracy percent:', (nltk.classify.accuracy(classifier, testing_set))*100)
+
+classify(models)

@@ -34,6 +34,7 @@ nltk_data/
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+*.pickle
 
 # Installer logs
 pip-log.txt
